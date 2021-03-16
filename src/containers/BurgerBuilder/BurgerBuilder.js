@@ -27,6 +27,7 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props)
     axios
       .get(
         "https://react-burger-app987-default-rtdb.firebaseio.com/ingredients.json"
@@ -81,24 +82,36 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    this.setState({ loading: true });
-    const order = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      address: {
-        street: "Chopra colony",
-        city: "Bishrampur",
-        country: "India",
-      },
-      email: "vsvijju987@gmail.com",
-      deliveryMethod: "fastest",
-    };
-    axios
-      .post("/orders.json", order)
-      .then((res) => {
-        this.setState({ loading: false, purchasing: false });
-      })
-      .catch((err) => this.setState({ loading: false, purchasing: false }));
+
+    const queryParams = [];
+    for(let i in this.state.ingredients){
+      queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]))
+    }
+
+    const queryString = queryParams.join('&');
+
+    this.props.history.push({
+      pathname: '/checkout',
+      search: queryString
+    });
+    // this.setState({ loading: true });
+    // const order = {
+    //   ingredients: this.state.ingredients,
+    //   price: this.state.totalPrice,
+    //   address: {
+    //     street: "Chopra colony",
+    //     city: "Bishrampur",
+    //     country: "India",
+    //   },
+    //   email: "vsvijju987@gmail.com",
+    //   deliveryMethod: "fastest",
+    // };
+    // axios
+    //   .post("/orders.json", order)
+    //   .then((res) => {
+    //     this.setState({ loading: false, purchasing: false });
+    //   })
+    //   .catch((err) => this.setState({ loading: false, purchasing: false }));
   };
 
   render() {
