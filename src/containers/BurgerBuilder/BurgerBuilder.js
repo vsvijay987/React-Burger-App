@@ -27,7 +27,7 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props)
+    console.log(this.props);
     axios
       .get(
         "https://react-burger-app987-default-rtdb.firebaseio.com/ingredients.json"
@@ -82,36 +82,22 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-
     const queryParams = [];
-    for(let i in this.state.ingredients){
-      queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]))
+    for (let i in this.state.ingredients) {
+      queryParams.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
     }
-
-    const queryString = queryParams.join('&');
+    queryParams.push('price=' + this.state.totalPrice);
+    const queryString = queryParams.join("&");
 
     this.props.history.push({
-      pathname: '/checkout',
-      search: queryString
+      pathname: "/checkout",
+      search: queryString,
     });
-    // this.setState({ loading: true });
-    // const order = {
-    //   ingredients: this.state.ingredients,
-    //   price: this.state.totalPrice,
-    //   address: {
-    //     street: "Chopra colony",
-    //     city: "Bishrampur",
-    //     country: "India",
-    //   },
-    //   email: "vsvijju987@gmail.com",
-    //   deliveryMethod: "fastest",
-    // };
-    // axios
-    //   .post("/orders.json", order)
-    //   .then((res) => {
-    //     this.setState({ loading: false, purchasing: false });
-    //   })
-    //   .catch((err) => this.setState({ loading: false, purchasing: false }));
+    
   };
 
   render() {
@@ -123,7 +109,11 @@ class BurgerBuilder extends Component {
 
     let orderSummary = null;
 
-    let burger = this.state.error ? <p>Can't retrieve the ingredients</p> : <Spinner />;
+    let burger = this.state.error ? (
+      <p>Can't retrieve the ingredients</p>
+    ) : (
+      <Spinner />
+    );
 
     if (this.state.ingredients) {
       burger = (
