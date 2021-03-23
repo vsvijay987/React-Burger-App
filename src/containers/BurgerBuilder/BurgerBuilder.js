@@ -9,23 +9,17 @@ import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import * as actionTypes from "../../store/actions";
+import * as burgerActionCreator from '../../store/actions/index';
 
 class BurgerBuilder extends Component {
   state = {
     purchasing: false,
-    loading: false,
-    error: false,
   };
 
   componentDidMount() {
     console.log(this.props);
-    // axios
-    //   .get(
-    //     "https://react-burger-app987-default-rtdb.firebaseio.com/ingredients.json"
-    //   )
-    //   .then((res) => this.setState({ ingredients: res.data }))
-    //   .catch((error) => this.setState({ error: true }));
+    this.props.onInitIngredients();
+
   }
 
   updatePurchase = (ingredients) => {
@@ -61,7 +55,7 @@ class BurgerBuilder extends Component {
 
     let orderSummary = null;
 
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <p>Can't retrieve the ingredients</p>
     ) : (
       <Spinner />
@@ -90,9 +84,6 @@ class BurgerBuilder extends Component {
         />
       );
     }
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
 
     return (
       <Auxiliary>
@@ -112,16 +103,15 @@ const mapStateToProps = (state) => {
   return {
     ings: state.ingredients,
     price: state.totalPrice,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onIngredientsAdded: (ingName) => dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientName: ingName }),
-    onIngredientsRemoved: (ingName) => dispatch({
-        type: actionTypes.REMOVE_INGREDIENT,
-        ingredientName: ingName,
-      }),
+    onIngredientsAdded: (ingName) => dispatch(burgerActionCreator.addIngredient(ingName)),
+    onIngredientsRemoved: (ingName) => dispatch(burgerActionCreator.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(burgerActionCreator.initIngredients())
   };
 };
 
