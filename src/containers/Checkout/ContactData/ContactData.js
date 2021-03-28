@@ -6,8 +6,8 @@ import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import classes from "./ContactData.css";
 import Input from "../../../components/UI/Input/Input";
-import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
-import * as actions from '../../../store/actions/index';
+import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
+import * as actions from "../../../store/actions/index";
 
 class ContactData extends Component {
   state = {
@@ -117,12 +117,12 @@ class ContactData extends Component {
     if (rules.isEmail) {
       const pattern = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
       isValid = pattern.test(value) && isValid;
-  }
+    }
 
-  if (rules.isNumeric){
+    if (rules.isNumeric) {
       const pattern = /^\d+$/;
       isValid = pattern.test && isValid;
-  }
+    }
 
     return isValid;
   }
@@ -140,6 +140,8 @@ class ContactData extends Component {
       ingredients: this.props.ings,
       price: this.props.price,
       orderData: formData,
+      userId: this.props.userId
+      
     };
     this.props.onOrderBurger(order, this.props.token);
   };
@@ -213,14 +215,19 @@ const mapStateToProps = (state) => {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
     loading: state.order.loading,
-    token: state.auth.tokenId
+    token: state.auth.tokenId,
+    userId: state.auth.userId,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
-  }
-}
+    onOrderBurger: (orderData, token) =>
+      dispatch(actions.purchaseBurger(orderData, token)),
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));
