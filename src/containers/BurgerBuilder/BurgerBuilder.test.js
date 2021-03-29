@@ -11,7 +11,7 @@ configure({ adapter: new Adapter() });
 describe("<BurgerBuilder/>", () => {
   let wrapper;
   beforeEach(() => {
-    wrapper = shallow(<BurgerBuilder onInitIngredients={() => {}} onInitPurchase={() => {}} />);
+    wrapper = shallow(<BurgerBuilder onInitIngredients={() => {}}/>);
   });
 
   it("should render <BuildControls/> when receiving ingredients", () => {

@@ -18,7 +18,6 @@ export class BurgerBuilder extends Component {
 
   componentDidMount() {
     this.props.onInitIngredients();
-    this.props.onInitPurchase();
   }
 
   updatePurchase = (ingredients) => {
