@@ -16,7 +16,6 @@ const burgerBuilder = props => {
 
   useEffect(() => {
     props.onInitIngredients();
-    props.onInitPurchase();
   }, []) 
 
   const updatePurchase = (ingredients) => {
@@ -34,9 +33,12 @@ const burgerBuilder = props => {
   const purchaseHandler = () => {
     if(props.isAuthenticate){
       setPurchasing(true);
-    }
-    props.onSetAuthRedirectPath('/checkout');
+    }else{
+      props.onSetAuthRedirectPath('/checkout');
     props.history.push("/auth");
+    }
+
+    
   };
 
   const purchaseCancelHandler = () => {
@@ -44,7 +46,7 @@ const burgerBuilder = props => {
   };
 
   const purchaseContinueHandler = () => {
-    
+    props.onInitPurchase()
     props.history.push("/checkout");
   };
 
