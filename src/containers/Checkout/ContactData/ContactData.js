@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 
 import axios from "../../../axios-orders";
@@ -10,9 +10,8 @@ import withErrorHandler from "../../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from "../../../store/actions/index";
 import { updateObject, checkValidity } from "../../../shared/utility";
 
-class ContactData extends Component {
-  state = {
-    orderForm: {
+const contactData = (props) => {
+  const [orderForm, setOrderForm] = useState({
       name: {
         elementType: "input",
         elementConfig: {
@@ -95,41 +94,42 @@ class ContactData extends Component {
         valid: true,
         value: "fastest",
       },
-    },
-    formIsValid: false,
-    loading: false,
-  };
+    })
+
+    const [formIsValid, setformIsValid] = useState(false);
+    
+  
 
   
 
-  orderHandler = (e) => {
+  const orderHandler = (e) => {
     e.preventDefault();
     let formData = {};
-    for (let formElementIdentifier in this.state.orderForm) {
-      formData[formElementIdentifier] = this.state.orderForm[
+    for (let formElementIdentifier in orderForm) {
+      formData[formElementIdentifier] = orderForm[
         formElementIdentifier
       ].value;
     }
 
     const order = {
-      ingredients: this.props.ings,
-      price: this.props.price,
+      ingredients: props.ings,
+      price: props.price,
       orderData: formData,
-      userId: this.props.userId,
+      userId: props.userId,
     };
-    this.props.onOrderBurger(order, this.props.token);
+    props.onOrderBurger(order, props.token);
   };
 
-  inputChangedHandler = (event, inputIdentifer) => {
-    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifer], {
+  const inputChangedHandler = (event, inputIdentifer) => {
+    const updatedFormElement = updateObject(orderForm[inputIdentifer], {
       value: event.target.value,
       touched: true,
       valid: checkValidity(
         event.target.value,
-        this.state.orderForm[inputIdentifer].validation
+        orderForm[inputIdentifer].validation
       ),
     });
-    const updatedOrderForm = updateObject(this.state.orderForm, {
+    const updatedOrderForm = updateObject(orderForm, {
       [inputIdentifer]: updatedFormElement,
     });
 
@@ -138,20 +138,21 @@ class ContactData extends Component {
       formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
     }
 
-    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
+    setOrderForm(updatedOrderForm);
+    setformIsValid(formIsValid);
   };
 
-  render() {
+  
     const formElementsArray = [];
-    for (let key in this.state.orderForm) {
+    for (let key in orderForm) {
       formElementsArray.push({
         id: key,
-        config: this.state.orderForm[key],
+        config: orderForm[key],
       });
     }
 
     let form = (
-      <form onSubmit={this.orderHandler}>
+      <form onSubmit={orderHandler}>
         {formElementsArray.map((formElement) => {
           return (
             <Input
@@ -163,19 +164,19 @@ class ContactData extends Component {
               touched={formElement.config.touched}
               shouldValidate={formElement.config.validation}
               changed={(event) =>
-                this.inputChangedHandler(event, formElement.id)
+                inputChangedHandler(event, formElement.id)
               }
             />
           );
         })}
 
-        <Button btnType="Success" disabled={!this.state.formIsValid}>
+        <Button btnType="Success" disabled={!formIsValid}>
           ORDER
         </Button>
       </form>
     );
 
-    if (this.props.loading) {
+    if (props.loading) {
       form = <Spinner />;
     }
     return (
@@ -184,7 +185,7 @@ class ContactData extends Component {
         {form}
       </div>
     );
-  }
+  
 }
 
 const mapStateToProps = (state) => {
@@ -207,4 +208,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withErrorHandler(ContactData, axios));
+)(withErrorHandler(contactData, axios));
