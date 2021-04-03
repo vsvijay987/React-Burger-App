@@ -14,9 +14,11 @@ import * as actions from "../../store/actions/index";
 const burgerBuilder = props => {
   const [purchasing, setPurchasing] = useState(false);
 
+  const {onInitIngredients} = props;
+
   useEffect(() => {
-    props.onInitIngredients();
-  }, []) 
+    onInitIngredients();
+  }, [onInitIngredients]) 
 
   const updatePurchase = (ingredients) => {
     const sum = Object.keys(ingredients)
@@ -35,7 +37,7 @@ const burgerBuilder = props => {
       setPurchasing(true);
     }else{
       props.onSetAuthRedirectPath('/checkout');
-    props.history.push("/auth");
+      props.history.push("/auth");
     }
 
     
